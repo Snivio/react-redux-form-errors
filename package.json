@@ -4,6 +4,9 @@
   "description": "A lightweight Redux Toolkit-based form error management library for React. Provides automatic error tracking, field focus management, and sequential error navigation with minimal dependencies.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "repository": {
+    "url": "https://github.com/Snivio/react-redux-form-errors.git"
+  },
   "files": [
     "dist"
   ],
