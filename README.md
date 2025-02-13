@@ -103,13 +103,15 @@ import React from "react";
 import { useErrorNavigation } from "react-redux-form-errors";
 
 const ErrorSummary = () => {
-  const { errorCount, scrollToFirst, scrollToNext } = useErrorNavigation();
+  const { errorCount, scrollToFirst, scrollToNext, currentErrorMessage } =
+    useErrorNavigation();
 
   if (errorCount === 0) return null;
 
   return (
     <div className="error-summary">
       <p>Errors: {errorCount}</p>
+      <p>Cuurent Error Message: {currentErrorMessage}</p>
       <button onClick={scrollToFirst}>Jump to first error</button>
       <button onClick={scrollToNext}>Next error</button>
     </div>
@@ -161,11 +163,12 @@ const ref = useErrorHandler("email", true, "Email is required");
 
 Manages error navigation within the form.
 
-| Property        | Type         | Description                            |
-| --------------- | ------------ | -------------------------------------- |
-| `errorCount`    | `number`     | The total number of errors in the form |
-| `scrollToFirst` | `() => void` | Scrolls to the first error field       |
-| `scrollToNext`  | `() => void` | Scrolls to the next error field        |
+| Property              | Type         | Description                            |
+| --------------------- | ------------ | -------------------------------------- |
+| `errorCount`          | `number`     | The total number of errors in the form |
+| `scrollToFirst`       | `() => void` | Scrolls to the first error field       |
+| `scrollToNext`        | `() => void` | Scrolls to the next error field        |
+| `currentErrorMessage` | `string`     | Current index error message            |
 
 #### Example:
 
