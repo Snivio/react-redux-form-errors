@@ -79,10 +79,13 @@ export const useErrorNavigation = () => {
     [errorFields, scrollToError]
   );
 
+  const currentErrorMessage = getCurrentFields()[currentIndex]?.message || "";
+
   return {
     errorCount: errorFields.length,
     errors: getCurrentFields(),
     currentErrorIndex: currentIndex,
+    currentErrorMessage,
     scrollToFirst,
     scrollToNext,
     scrollToError: scrollToErrorByField,
