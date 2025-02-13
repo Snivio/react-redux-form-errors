@@ -37,6 +37,12 @@ export const useErrorNavigation = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const errorFields = Object.keys(errors);
 
+  useEffect(() => {
+    if (currentIndex >= errorFields.length) {
+      setCurrentIndex(Math.max(0, errorFields.length - 1));
+    }
+  }, [errorFields.length, currentIndex]);
+
   const getCurrentFields = useCallback(() => {
     return errorFields.map((field) => ({
       field,
@@ -48,6 +54,7 @@ export const useErrorNavigation = () => {
   const scrollToError = useCallback(
     (index: number) => {
       const fields = getCurrentFields();
+      if (fields.length === 0) return;
       const adjustedIndex = Math.max(0, Math.min(index, fields.length - 1));
       const element = fields[adjustedIndex]?.ref;
 
@@ -61,11 +68,13 @@ export const useErrorNavigation = () => {
   );
 
   const scrollToFirst = useCallback(() => {
+    setCurrentIndex(0);
     scrollToError(0);
   }, [scrollToError]);
 
   const scrollToNext = useCallback(() => {
-    const nextIndex = (currentIndex + 1) % errorFields.length;
+    const nextIndex =
+      errorFields.length > 0 ? (currentIndex + 1) % errorFields.length : 0;
     scrollToError(nextIndex);
   }, [currentIndex, errorFields.length, scrollToError]);
 
