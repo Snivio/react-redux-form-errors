@@ -1,63 +1,84 @@
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setError, clearError } from "./errorSlice";
+import { v4 as uuidv4 } from "uuid";
+import { clearError, setError } from "./errorSlice";
 import { RootState } from "./store";
+
 export const useErrorHandler = (
   field: string,
   hasError: boolean,
   errorMessage?: string
 ) => {
-  const ref = useRef<HTMLInputElement | null>(null);
   const dispatch = useDispatch();
-  const errors = useSelector((state: RootState) => state.formErrors.errors);
+  const ref = useRef<HTMLInputElement | null>(null);
+  const [fieldUUID] = useState(() => uuidv4());
 
   useEffect(() => {
     if (hasError && errorMessage) {
+      if (ref.current) {
+        ref.current.setAttribute("data-error-id", fieldUUID);
+      }
+
       dispatch(
         setError({
           field,
           message: errorMessage,
-          ref: ref.current,
+          uuid: fieldUUID,
         })
       );
     } else {
+      if (ref.current) {
+        ref.current.removeAttribute("data-error-id");
+      }
       dispatch(clearError(field));
     }
 
     return () => {
       dispatch(clearError(field));
+      if (ref.current) {
+        ref.current.removeAttribute("data-error-id");
+      }
     };
-  }, [hasError, errorMessage, field, dispatch]);
+  }, [hasError, errorMessage, field, dispatch, fieldUUID]);
 
   return ref;
 };
 
 export const useErrorNavigation = () => {
-  const { errors, refs } = useSelector((state: RootState) => state.formErrors);
+  const { errors, uuids } = useSelector((state: RootState) => state.formErrors);
   const [currentIndex, setCurrentIndex] = useState(0);
   const errorFields = Object.keys(errors);
+
+  const errorUUIDs = useMemo(
+    () => errorFields.map((field) => uuids[field]),
+    [errorFields, uuids]
+  );
+
+  const getElementByUUID = useCallback((uuid: string) => {
+    return document.querySelector<HTMLElement>(`[data-error-id="${uuid}"]`);
+  }, []);
 
   const getCurrentFields = useCallback(() => {
     return errorFields.map((field) => ({
       field,
       message: errors[field],
-      ref: refs[field],
+      ref: getElementByUUID(uuids[field]),
     }));
-  }, [errorFields, errors, refs]);
+  }, [errorFields, errors, uuids, getElementByUUID]);
 
   const scrollToError = useCallback(
     (index: number) => {
-      const fields = getCurrentFields();
-      const adjustedIndex = Math.max(0, Math.min(index, fields.length - 1));
-      const element = fields[adjustedIndex]?.ref;
+      const uuid = errorUUIDs[index];
+      if (!uuid) return;
 
+      const element = getElementByUUID(uuid);
       if (element) {
         element.scrollIntoView({ behavior: "smooth", block: "center" });
         element.focus();
-        setCurrentIndex(adjustedIndex);
+        setCurrentIndex(index);
       }
     },
-    [getCurrentFields]
+    [errorUUIDs, getElementByUUID]
   );
 
   const scrollToFirst = useCallback(() => {

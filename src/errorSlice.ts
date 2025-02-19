@@ -2,34 +2,34 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface ErrorState {
   errors: Record<string, string>;
-  refs: Record<string, HTMLElement | null | any>;
+  uuids: Record<string, string>;
 }
 
 const initialState: ErrorState = {
   errors: {},
-  refs: {},
+  uuids: {},
 };
 
 const errorSlice = createSlice({
   name: "formErrors",
   initialState,
   reducers: {
-    setError: (
+    setError(
       state,
       action: PayloadAction<{
         field: string;
         message: string;
-        ref: HTMLElement | null;
+        uuid: string;
       }>
-    ) => {
-      const { field, message, ref } = action.payload;
+    ) {
+      const { field, message, uuid } = action.payload;
       state.errors[field] = message;
-      state.refs[field] = ref;
+      state.uuids[field] = uuid;
     },
-    clearError: (state, action: PayloadAction<string>) => {
+    clearError(state, action: PayloadAction<string>) {
       const field = action.payload;
       delete state.errors[field];
-      delete state.refs[field];
+      delete state.uuids[field];
     },
   },
 });

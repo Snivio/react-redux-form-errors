@@ -111,7 +111,7 @@ const ErrorSummary = () => {
   return (
     <div className="error-summary">
       <p>Errors: {errorCount}</p>
-      <p>Cuurent Error Message: {currentErrorMessage}</p>
+      <p>Current Error Message: {currentErrorMessage}</p>
       <button onClick={scrollToFirst}>Jump to first error</button>
       <button onClick={scrollToNext}>Next error</button>
     </div>

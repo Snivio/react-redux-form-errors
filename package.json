@@ -1,6 +1,6 @@
 {
   "name": "react-redux-form-errors",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "A lightweight Redux Toolkit-based form error management library for React. Provides automatic error tracking, field focus management, and sequential error navigation with minimal dependencies.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -32,7 +32,8 @@
   "license": "MIT",
   "dependencies": {
     "react": "^19.0.0",
-    "react-redux": "^9.2.0"
+    "react-redux": "^9.2.0",
+    "uuid": "^11.0.5"
   },
   "devDependencies": {
     "@reduxjs/toolkit": "^2.5.1",
